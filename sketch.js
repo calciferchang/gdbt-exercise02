@@ -4,6 +4,14 @@ function setup() {
   stroke(0)
 }
 
-function mouseDragged() {
-  line(pmouseX, pmouseY, mouseX, mouseY);
+function mouseClicked() {
+  stickyNote = createDiv('Note');
+  stickyNote.position(5, 5);
+  stickyNote.size(80, 20);
+  stickyNote.style('font-size', '16px');
+  stickyNote.style('font-family', 'Comic Sans MS');
+  stickyNote.style('padding', '5px');
+  stickyNote.draggable();
+  stickyNote.mouseClicked()
 }
+
