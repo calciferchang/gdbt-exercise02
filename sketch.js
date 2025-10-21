@@ -1,35 +1,63 @@
+let notes = [];
+let fontSize = 50;
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  strokeWeight(10)
-  stroke(0)
+  strokeWeight(1);
+  stroke(0);
+  textSize(fontSize);
 }
 
-function mouseClicked() {
-  switch (state) {
-    case "text_hover":
-      // add class to the highest level element?
-      // as long as the cursor is over an element, the highest level element will have a class applied to it, which will allow actions to be applied to it.
-      break;
-    default:
-      addText();
-      break;
+function draw() {
+  background(255);
+  for (let i = 0; i < notes.length; i++) {
+    let note = notes[i];
+    note.display();
+    if (
+      mouseX > note.x &&
+      mouseX < note.x + note.w &&
+      mouseY > note.y &&
+      mouseY < note.y + note.h
+    ) {
+      note.isChangeable();
+    }
   }
 }
 
-function addText() {
-  stickyNote = createDiv('Note');
-  stickyNote.position(mouseX, mouseY);
-  stickyNote.size(80, 20);
-  stickyNote.style('font-size', '16px');
-  stickyNote.style('font-family', 'Comic Sans MS');
-  stickyNote.style('padding', '5px');
-  stickyNote.draggable();
-  stickyNote.elt.addEventListener('click', (event) => {
-    event.stopPropagation();
-    console.log('Button clicked');
-  });
-  // Remember which note was clicked (this text)
-  // Key inputs now will affect this text (how do select an element to have its innerHTML changed?)
+function mouseClicked() {
+  notes.push(new StickyNote("New", mouseX, mouseY));
 }
 
-let state = ""
+function keyReleased() {
+  console.log(key);
+  for (let i = 0; i < notes.length; i++) {
+    let note = notes[i];
+
+    if (
+      mouseX > note.x &&
+      mouseX < note.x + note.w &&
+      mouseY > note.y &&
+      mouseY < note.y + note.h
+    ) {
+      note.changeText(key);
+    }
+  }
+}
+
+class StickyNote {
+  constructor(txt, x, y) {
+    this.txt = txt;
+    this.x = x;
+    this.y = y;
+    this.w = textWidth(txt);
+    this.h = fontSize;
+  }
+
+  display() {
+    text(this.txt, this.x, this.y);
+  }
+  changeText(txt) {
+    this.txt = txt;
+  }
+}
+
+let state = "";
