@@ -1,63 +1,54 @@
-let notes = [];
-let fontSize = 50;
+let img;
+
+let TILES_X = 80;
+let TILES_Y = 60;
+
+let TILE_W, TILE_H;
+
+let FONT
+
+let CHARS = "#/-. ";
+
+function preload() {
+  img = loadImage("p.jpg");
+}
+
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  strokeWeight(1);
-  stroke(0);
-  textSize(fontSize);
+  createCanvas(600, 600);
+  
+  img.resize(TILES_X, TILES_Y);
+
+  FONT = loadFont("JetBrainsMonoNerdFont-Regular.ttf") 
+
+  TILE_W = width / TILES_X;
+  TILE_H = height / TILES_Y;
+  
+  textAlign(CENTER, CENTER);
+  textSize(12);
+  textFont(FONT)
 }
 
 function draw() {
-  background(255);
-  for (let i = 0; i < notes.length; i++) {
-    let note = notes[i];
-    note.display();
-    if (
-      mouseX > note.x &&
-      mouseX < note.x + note.w &&
-      mouseY > note.y &&
-      mouseY < note.y + note.h
-    ) {
-      note.isChangeable();
+
+  background("#f1f1f1");
+  noStroke();
+  
+  translate(TILE_W / 2, TILE_H / 2);
+
+  for (let x = 0; x < TILES_X; x++) {
+    for (let y = 0; y < TILES_Y; y++) {
+
+      let c = img.get(x, y);
+      let b = brightness(c);
+      
+      let selector = int( map(b,0,100,0,CHARS.length) - 1 );
+
+      fill(0);
+      
+      push();
+      translate(x * TILE_W, y * TILE_H);
+      text(CHARS.charAt(selector), 0, 0);
+      pop();
     }
   }
 }
-
-function mouseClicked() {
-  notes.push(new StickyNote("New", mouseX, mouseY));
-}
-
-function keyReleased() {
-  console.log(key);
-  for (let i = 0; i < notes.length; i++) {
-    let note = notes[i];
-
-    if (
-      mouseX > note.x &&
-      mouseX < note.x + note.w &&
-      mouseY > note.y &&
-      mouseY < note.y + note.h
-    ) {
-      note.changeText(key);
-    }
-  }
-}
-
-class StickyNote {
-  constructor(txt, x, y) {
-    this.txt = txt;
-    this.x = x;
-    this.y = y;
-    this.w = textWidth(txt);
-    this.h = fontSize;
-  }
-
-  display() {
-    text(this.txt, this.x, this.y);
-  }
-  changeText(txt) {
-    this.txt = txt;
-  }
-}
-
-let state = "";
